@@ -1,13 +1,5 @@
-from flask import Flask
+"""
+肌少症（肌护达）老年患者健康管理系统
+"""
 
-def create_app():
-    app = Flask(__name__)
-    
-    # 从.env文件加载配置
-    app.config.from_prefixed_env()
-    
-    # 注册蓝图
-    from app.routes import main_bp
-    app.register_blueprint(main_bp)
-    
-    return app
+# 这个文件保留为空，项目将使用app/main.py作为入口点
