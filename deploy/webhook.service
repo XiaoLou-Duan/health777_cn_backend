@@ -1,0 +1,19 @@
+[Unit]
+Description=Health777 GitHub Webhook Service
+After=network.target
+
+[Service]
+User=appuser
+Group=appuser
+WorkingDirectory=/usr/local/app/health777_cn_backend  # 应用目录路径
+Environment="PATH=/usr/local/app/health777_cn_backend/venv/bin"
+Environment="WEBHOOK_SECRET=kfiwwneHdwieohrgtf15"
+ExecStart=/usr/local/app/health777_cn_backend/venv/bin/python /usr/local/app/health777_cn_backend/deploy/webhook.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=health777_webhook
+
+[Install]
+WantedBy=multi-user.target
