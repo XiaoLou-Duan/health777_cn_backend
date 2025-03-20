@@ -42,7 +42,7 @@ async def root():
     根路径，返回API基本信息
     """
     return {
-        "message": "欢迎使用肌少症【肌护达】老年患者健康管理系统API~",
+        "message": "欢迎使用肌少症【肌护达】老年患者健康管理系统API!",
         "version": "0.1.0",
         "status": "healthy"
     }
