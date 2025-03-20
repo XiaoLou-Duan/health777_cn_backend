@@ -8,7 +8,6 @@ GITHUB_REPO="https://github.com/XiaoLou-Duan/health777_cn_backend.git"
 WEBHOOK_SECRET="kfiwwneHdwieohrgtf15"  # 请替换为实际的Webhook密钥
 USER="appuser"  # 专门用于运行应用的用户
 GROUP="appuser"  # 专门用于运行应用的用户组
-
 # 确保脚本以root权限运行
 if [ "$(id -u)" -ne 0 ]; then
     echo "此脚本需要root权限运行"
