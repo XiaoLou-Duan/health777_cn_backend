@@ -13,4 +13,3 @@ passlib==1.7.4
 python-multipart==0.0.6
 pillow==10.0.0
 requests==2.31.0
-jpush-py==3.3.11
