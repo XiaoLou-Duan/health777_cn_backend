@@ -62,10 +62,45 @@ async def github_webhook(request: Request, x_github_event: str = Header(None)):
         if branch != "main":
             return JSONResponse(content={"message": f"事件已接收，但只处理main分支，不处理 {branch} 分支"})
         
-        # 执行部署脚本
+        # 执行部署脚本 - 增强执行方式
         logger.info(f"收到main分支push事件，开始部署")
-        subprocess.Popen([DEPLOY_SCRIPT], shell=True)
-        return JSONResponse(content={"message": "部署已触发"})
+        
+        # 确保脚本有执行权限
+        try:
+            os.chmod(DEPLOY_SCRIPT, 0o755)
+            logger.info(f"已设置脚本执行权限: {DEPLOY_SCRIPT}")
+        except Exception as e:
+            logger.warning(f"设置脚本权限失败: {str(e)}")
+        
+        # 使用完整路径执行bash并传入脚本
+        try:
+            # 使用subprocess.run而不是Popen，以便实时获取输出
+            logger.info(f"执行脚本: {DEPLOY_SCRIPT}")
+            result = subprocess.run(
+                ['/bin/bash', DEPLOY_SCRIPT], 
+                capture_output=True,
+                text=True,
+                check=False
+            )
+            
+            # 记录执行结果
+            logger.info(f"脚本执行返回码: {result.returncode}")
+            if result.stdout:
+                logger.info(f"脚本输出: {result.stdout}")
+            if result.stderr:
+                logger.error(f"脚本错误: {result.stderr}")
+                
+            if result.returncode != 0:
+                logger.error(f"部署脚本执行失败，返回码: {result.returncode}")
+                return JSONResponse(
+                    content={"message": "部署已触发但可能失败", "error": result.stderr},
+                    status_code=500
+                )
+                
+            return JSONResponse(content={"message": "部署已成功触发", "status": "success"})
+        except Exception as e:
+            logger.error(f"执行部署脚本时出错: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"执行部署脚本时出错: {str(e)}")
     
     except Exception as e:
         logger.error(f"处理webhook时出错: {str(e)}")
