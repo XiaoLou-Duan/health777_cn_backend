@@ -76,7 +76,7 @@ async def root():
     """
     app_logger.info("访问根路径")
     return {
-        "message": "欢迎使用肌少症##肌护达##老年患者健康管理系统API",
+        "message": "欢迎使用肌少症【肌护达】老年患者健康管理系统API",
         "version": "0.1.0",
         "status": "healthy"
     }
