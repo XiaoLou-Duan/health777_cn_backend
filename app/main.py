@@ -69,7 +69,7 @@ async def log_requests(request: Request, call_next):
 # app.include_router(medical_router, prefix="/api/medical", tags=["医患互动"])
 # app.include_router(reminders_router, prefix="/api/reminders", tags=["提醒系统"])
 
-@app.get("/")
+@app.get("/api")
 async def root():
     """
     根路径，返回API基本信息
