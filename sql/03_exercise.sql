@@ -16,7 +16,8 @@ CREATE TABLE IF NOT EXISTS `exercise_videos` (
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   KEY `idx_difficulty` (`difficulty_level`),
-  KEY `idx_category` (`category`)
+  KEY `idx_category` (`category`),
+  KEY `idx_view_count` (`view_count`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='运动视频资源表';
 
 -- 用户运动记录表
@@ -35,8 +36,8 @@ CREATE TABLE IF NOT EXISTS `exercise_records` (
   PRIMARY KEY (`id`),
   KEY `idx_user_id_date` (`user_id`, `exercise_date`),
   KEY `idx_video_id` (`video_id`),
-  CONSTRAINT `fk_exercise_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_exercise_video_id` FOREIGN KEY (`video_id`) REFERENCES `exercise_videos` (`id`) ON DELETE SET NULL
+  KEY `idx_exercise_type` (`exercise_type`),
+  KEY `idx_completion_rate` (`completion_rate`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户运动记录表';
 
 -- 运动统计表
@@ -53,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `exercise_statistics` (
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_user_date_type` (`user_id`, `statistic_date`, `statistic_type`),
-  CONSTRAINT `fk_exercise_stat_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  KEY `idx_achievement_rate` (`achievement_rate`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='运动统计表';
 
 -- 用户视频观看记录表
@@ -69,6 +70,6 @@ CREATE TABLE IF NOT EXISTS `video_watch_records` (
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_user_video` (`user_id`, `video_id`),
-  CONSTRAINT `fk_watch_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_watch_video_id` FOREIGN KEY (`video_id`) REFERENCES `exercise_videos` (`id`) ON DELETE CASCADE
+  KEY `idx_watch_date` (`watch_date`),
+  KEY `idx_completion_rate` (`completion_rate`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户视频观看记录表';

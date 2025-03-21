@@ -9,8 +9,7 @@ CREATE TABLE IF NOT EXISTS `user_points` (
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_user_id` (`user_id`),
-  CONSTRAINT `fk_points_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  UNIQUE KEY `idx_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户积分表';
 
 -- 积分记录表
@@ -25,7 +24,8 @@ CREATE TABLE IF NOT EXISTS `point_records` (
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`),
   KEY `idx_user_id` (`user_id`),
-  CONSTRAINT `fk_point_records_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  KEY `idx_record_type` (`record_type`),
+  KEY `idx_created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='积分记录表';
 
 -- 成就定义表
@@ -41,7 +41,8 @@ CREATE TABLE IF NOT EXISTS `achievements` (
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
-  KEY `idx_category_level` (`category`, `level`)
+  KEY `idx_category_level` (`category`, `level`),
+  KEY `idx_points` (`points`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='成就定义表';
 
 -- 用户成就记录表
@@ -53,8 +54,7 @@ CREATE TABLE IF NOT EXISTS `user_achievements` (
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_user_achievement` (`user_id`, `achievement_id`),
-  CONSTRAINT `fk_user_achieve_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_user_achieve_achievement_id` FOREIGN KEY (`achievement_id`) REFERENCES `achievements` (`id`) ON DELETE CASCADE
+  KEY `idx_achieved_at` (`achieved_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户成就记录表';
 
 -- 社区话题表
@@ -68,7 +68,9 @@ CREATE TABLE IF NOT EXISTS `topics` (
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_name` (`name`)
+  UNIQUE KEY `idx_name` (`name`),
+  KEY `idx_status` (`status`),
+  KEY `idx_post_count` (`post_count`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='社区话题表';
 
 -- 社区帖子表
@@ -87,8 +89,10 @@ CREATE TABLE IF NOT EXISTS `posts` (
   PRIMARY KEY (`id`),
   KEY `idx_user_id` (`user_id`),
   KEY `idx_topic_id` (`topic_id`),
-  CONSTRAINT `fk_posts_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_posts_topic_id` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`id`) ON DELETE SET NULL
+  KEY `idx_status` (`status`),
+  KEY `idx_created_at` (`created_at`),
+  KEY `idx_view_count` (`view_count`),
+  KEY `idx_like_count` (`like_count`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='社区帖子表';
 
 -- 帖子图片表
@@ -100,7 +104,7 @@ CREATE TABLE IF NOT EXISTS `post_images` (
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`),
   KEY `idx_post_id` (`post_id`),
-  CONSTRAINT `fk_post_images_post_id` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE
+  KEY `idx_sort_order` (`sort_order`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='帖子图片表';
 
 -- 评论表
@@ -118,9 +122,8 @@ CREATE TABLE IF NOT EXISTS `comments` (
   KEY `idx_post_id` (`post_id`),
   KEY `idx_user_id` (`user_id`),
   KEY `idx_parent_id` (`parent_id`),
-  CONSTRAINT `fk_comments_post_id` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_comments_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_comments_parent_id` FOREIGN KEY (`parent_id`) REFERENCES `comments` (`id`) ON DELETE SET NULL
+  KEY `idx_status` (`status`),
+  KEY `idx_created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='评论表';
 
 -- 点赞表
@@ -132,5 +135,6 @@ CREATE TABLE IF NOT EXISTS `likes` (
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_user_target` (`user_id`, `target_id`, `target_type`),
-  CONSTRAINT `fk_likes_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  KEY `idx_target_id_type` (`target_id`, `target_type`),
+  KEY `idx_created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='点赞表';

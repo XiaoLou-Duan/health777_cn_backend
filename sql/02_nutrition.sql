@@ -33,7 +33,8 @@ CREATE TABLE IF NOT EXISTS `meals` (
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   KEY `idx_user_id_meal_time` (`user_id`, `meal_time`),
-  CONSTRAINT `fk_meals_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  KEY `idx_meal_type` (`meal_type`),
+  KEY `idx_ai_recognized` (`ai_recognized`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户餐食记录表';
 
 -- 餐食食物明细表
@@ -48,9 +49,7 @@ CREATE TABLE IF NOT EXISTS `meal_food_items` (
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`),
   KEY `idx_meal_id` (`meal_id`),
-  KEY `idx_food_item_id` (`food_item_id`),
-  CONSTRAINT `fk_meal_food_meal_id` FOREIGN KEY (`meal_id`) REFERENCES `meals` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_meal_food_food_id` FOREIGN KEY (`food_item_id`) REFERENCES `food_items` (`id`) ON DELETE SET NULL
+  KEY `idx_food_item_id` (`food_item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='餐食食物明细表';
 
 -- 营养摄入记录表
@@ -67,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `nutrition_records` (
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_user_date` (`user_id`, `record_date`),
-  CONSTRAINT `fk_nutrition_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  KEY `idx_achievement_rate` (`achievement_rate`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='营养摄入记录表';
 
 -- 乳清蛋白摄入记录表
@@ -82,7 +81,7 @@ CREATE TABLE IF NOT EXISTS `protein_supplements` (
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`),
   KEY `idx_user_id_time` (`user_id`, `supplement_time`),
-  CONSTRAINT `fk_protein_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  KEY `idx_supplement_type` (`supplement_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='乳清蛋白摄入记录表';
 
 -- 饮食建议表
@@ -96,5 +95,5 @@ CREATE TABLE IF NOT EXISTS `diet_recommendations` (
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`),
   KEY `idx_user_id_date` (`user_id`, `recommendation_date`),
-  CONSTRAINT `fk_diet_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  KEY `idx_is_read` (`is_read`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='饮食建议表';

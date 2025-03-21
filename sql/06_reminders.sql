@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS `reminder_settings` (
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_user_type` (`user_id`, `reminder_type`),
-  CONSTRAINT `fk_reminder_settings_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  KEY `idx_is_enabled` (`is_enabled`),
+  KEY `idx_reminder_time` (`reminder_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='提醒设置表';
 
 -- 免打扰时段表
@@ -28,7 +29,8 @@ CREATE TABLE IF NOT EXISTS `do_not_disturb` (
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   KEY `idx_user_id` (`user_id`),
-  CONSTRAINT `fk_dnd_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  KEY `idx_is_enabled` (`is_enabled`),
+  KEY `idx_time_range` (`start_time`, `end_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='免打扰时段表';
 
 -- 任务表
@@ -50,7 +52,9 @@ CREATE TABLE IF NOT EXISTS `tasks` (
   KEY `idx_user_id` (`user_id`),
   KEY `idx_task_type` (`task_type`),
   KEY `idx_status` (`status`),
-  CONSTRAINT `fk_tasks_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  KEY `idx_date_range` (`start_date`, `end_date`),
+  KEY `idx_is_recurring` (`is_recurring`),
+  KEY `idx_points` (`points`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务表';
 
 -- 任务完成记录表
@@ -67,8 +71,7 @@ CREATE TABLE IF NOT EXISTS `task_completions` (
   KEY `idx_user_id` (`user_id`),
   KEY `idx_task_id` (`task_id`),
   KEY `idx_completion_date` (`completion_date`),
-  CONSTRAINT `fk_completion_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_completion_task_id` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`) ON DELETE CASCADE
+  KEY `idx_points_earned` (`points_earned`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务完成记录表';
 
 -- 通知表
@@ -87,7 +90,8 @@ CREATE TABLE IF NOT EXISTS `notifications` (
   KEY `idx_user_id` (`user_id`),
   KEY `idx_type` (`notification_type`),
   KEY `idx_is_read` (`is_read`),
-  CONSTRAINT `fk_notification_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  KEY `idx_created_at` (`created_at`),
+  KEY `idx_reference` (`reference_id`, `reference_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='通知表';
 
 -- 推送记录表
@@ -104,6 +108,7 @@ CREATE TABLE IF NOT EXISTS `push_records` (
   PRIMARY KEY (`id`),
   KEY `idx_user_id` (`user_id`),
   KEY `idx_notification_id` (`notification_id`),
-  CONSTRAINT `fk_push_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_push_notification_id` FOREIGN KEY (`notification_id`) REFERENCES `notifications` (`id`) ON DELETE SET NULL
+  KEY `idx_push_time` (`push_time`),
+  KEY `idx_status` (`status`),
+  KEY `idx_device_token` (`device_token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='推送记录表';

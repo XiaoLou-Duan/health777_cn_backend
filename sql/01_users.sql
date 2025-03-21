@@ -29,7 +29,8 @@ CREATE TABLE IF NOT EXISTS `user_profiles` (
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_user_id` (`user_id`),
-  CONSTRAINT `fk_profiles_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  KEY `idx_gender` (`gender`),
+  KEY `idx_birth_date` (`birth_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户详细信息表';
 
 -- 用户设备表
@@ -44,7 +45,8 @@ CREATE TABLE IF NOT EXISTS `user_devices` (
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   KEY `idx_user_id` (`user_id`),
-  CONSTRAINT `fk_devices_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  KEY `idx_device_token` (`device_token`),
+  KEY `idx_device_type` (`device_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户设备表';
 
 -- 验证码表
@@ -57,5 +59,7 @@ CREATE TABLE IF NOT EXISTS `verification_codes` (
   `is_used` TINYINT NOT NULL DEFAULT 0 COMMENT '是否已使用: 0-未使用, 1-已使用',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`),
-  KEY `idx_phone_type` (`phone`, `type`)
+  KEY `idx_phone_type` (`phone`, `type`),
+  KEY `idx_expire_time` (`expire_time`),
+  KEY `idx_is_used` (`is_used`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='验证码表';

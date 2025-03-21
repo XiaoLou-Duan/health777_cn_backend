@@ -17,7 +17,10 @@ CREATE TABLE IF NOT EXISTS `doctors` (
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   KEY `idx_department` (`department`),
-  KEY `idx_hospital` (`hospital`)
+  KEY `idx_hospital` (`hospital`),
+  KEY `idx_status` (`status`),
+  KEY `idx_online_status` (`online_status`),
+  KEY `idx_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='医生信息表';
 
 -- 医生账号表
@@ -33,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `doctor_accounts` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_username` (`username`),
   UNIQUE KEY `idx_doctor_id` (`doctor_id`),
-  CONSTRAINT `fk_doctor_accounts_doctor_id` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`id`) ON DELETE CASCADE
+  KEY `idx_last_login_time` (`last_login_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='医生账号表';
 
 -- 用户-医生关系表
@@ -47,8 +50,8 @@ CREATE TABLE IF NOT EXISTS `user_doctor_relations` (
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_user_doctor` (`user_id`, `doctor_id`),
-  CONSTRAINT `fk_relation_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_relation_doctor_id` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`id`) ON DELETE CASCADE
+  KEY `idx_relation_type` (`relation_type`),
+  KEY `idx_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户-医生关系表';
 
 -- 消息表
@@ -68,7 +71,10 @@ CREATE TABLE IF NOT EXISTS `messages` (
   PRIMARY KEY (`id`),
   KEY `idx_sender` (`sender_id`, `sender_type`),
   KEY `idx_receiver` (`receiver_id`, `receiver_type`),
-  KEY `idx_conversation` (`sender_id`, `sender_type`, `receiver_id`, `receiver_type`)
+  KEY `idx_conversation` (`sender_id`, `sender_type`, `receiver_id`, `receiver_type`),
+  KEY `idx_is_read` (`is_read`),
+  KEY `idx_created_at` (`created_at`),
+  KEY `idx_message_type` (`message_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息表';
 
 -- 会话表
@@ -85,9 +91,8 @@ CREATE TABLE IF NOT EXISTS `conversations` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_user_doctor` (`user_id`, `doctor_id`),
   KEY `idx_last_message` (`last_message_id`),
-  CONSTRAINT `fk_conversation_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_conversation_doctor_id` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_conversation_message_id` FOREIGN KEY (`last_message_id`) REFERENCES `messages` (`id`) ON DELETE SET NULL
+  KEY `idx_status` (`status`),
+  KEY `idx_updated_at` (`updated_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='会话表';
 
 -- 医生排班表
@@ -104,7 +109,8 @@ CREATE TABLE IF NOT EXISTS `doctor_schedules` (
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   KEY `idx_doctor_date` (`doctor_id`, `schedule_date`),
-  CONSTRAINT `fk_schedule_doctor_id` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`id`) ON DELETE CASCADE
+  KEY `idx_status` (`status`),
+  KEY `idx_availability` (`current_appointments`, `max_appointments`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='医生排班表';
 
 -- 预约表
@@ -127,7 +133,6 @@ CREATE TABLE IF NOT EXISTS `appointments` (
   KEY `idx_doctor_id` (`doctor_id`),
   KEY `idx_schedule_id` (`schedule_id`),
   KEY `idx_date_status` (`appointment_date`, `status`),
-  CONSTRAINT `fk_appointment_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_appointment_doctor_id` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_appointment_schedule_id` FOREIGN KEY (`schedule_id`) REFERENCES `doctor_schedules` (`id`) ON DELETE CASCADE
+  KEY `idx_appointment_type` (`appointment_type`),
+  KEY `idx_created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='预约表';
