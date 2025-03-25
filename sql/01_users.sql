@@ -63,3 +63,34 @@ CREATE TABLE IF NOT EXISTS `verification_codes` (
   KEY `idx_expire_time` (`expire_time`),
   KEY `idx_is_used` (`is_used`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='验证码表';
+
+
+-- 清空原有数据
+TRUNCATE TABLE `users`;
+TRUNCATE TABLE `user_profiles`;
+TRUNCATE TABLE `user_devices`;
+TRUNCATE TABLE `verification_codes`;
+
+-- 用户基本信息表示例数据
+INSERT INTO `users` (`phone`, `password_hash`, `salt`, `status`, `last_login_time`) VALUES
+('13800138000', 'e10adc3949ba59abbe56e057f20f883e', 'abc123', 1, '2023-05-15 10:30:00'),
+('13900139000', '25f9e794323b453885f5181f1b624d0b', 'def456', 1, '2023-05-16 11:45:00'),
+('13700137000', '5f4dcc3b5aa765d61d8327deb882cf99', 'ghi789', 0, '2023-04-20 09:15:00');
+
+-- 用户详细信息表示例数据(使用真实图片URL)
+INSERT INTO `user_profiles` (`user_id`, `name`, `gender`, `birth_date`, `height`, `weight`, `avatar_url`, `health_condition`) VALUES
+(1, '张三', 1, '1990-05-15', 175.50, 70.20, 'https://randomuser.me/api/portraits/men/32.jpg', '无特殊健康状况'),
+(2, '李四', 2, '1988-08-20', 165.30, 55.80, 'https://randomuser.me/api/portraits/women/44.jpg', '轻度高血压'),
+(3, '王五', 1, '1995-03-10', 180.00, 80.00, 'https://randomuser.me/api/portraits/men/75.jpg', '糖尿病');
+
+-- 用户设备表示例数据
+INSERT INTO `user_devices` (`user_id`, `device_token`, `device_type`, `device_model`, `last_active_time`) VALUES
+(1, 'ios_token_123456', 'ios', 'iPhone 13', '2023-05-15 10:35:00'),
+(1, 'android_token_654321', 'android', 'Xiaomi 12', '2023-05-14 18:20:00'),
+(2, 'ios_token_789012', 'ios', 'iPhone 12', '2023-05-16 11:50:00');
+
+-- 验证码表示例数据
+INSERT INTO `verification_codes` (`phone`, `code`, `type`, `expire_time`, `is_used`) VALUES
+('13800138000', '123456', 1, '2023-05-15 10:45:00', 1),
+('13900139000', '654321', 2, '2023-05-16 12:00:00', 0),
+('13700137000', '987654', 3, '2023-04-20 09:30:00', 1);
