@@ -2,7 +2,8 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import time
-from app.utils.logger import app_logger, log_request
+from app.core.logger import app_logger, log_request
+from app.api import auth
 
 # 创建FastAPI应用实例
 app = FastAPI(
@@ -54,7 +55,7 @@ async def log_requests(request: Request, call_next):
         )
 
 # 导入各模块路由
-# from app.api.auth import router as auth_router
+from app.api.auth import router as auth_router
 # from app.api.nutrition import router as nutrition_router
 # from app.api.exercise import router as exercise_router
 # from app.api.social import router as social_router
@@ -62,7 +63,7 @@ async def log_requests(request: Request, call_next):
 # from app.api.reminders import router as reminders_router
 
 # 注册路由
-# app.include_router(auth_router, prefix="/api/auth", tags=["认证"])
+app.include_router(auth_router, tags=["认证"])
 # app.include_router(nutrition_router, prefix="/api/nutrition", tags=["营养管理"])
 # app.include_router(exercise_router, prefix="/api/exercise", tags=["运动管理"])
 # app.include_router(social_router, prefix="/api/social", tags=["社交功能"])
