@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `idx_phone` (`phone`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户基本信息表';
 
--- 用户详细信息表
+-- 用户详细信息表1
 CREATE TABLE IF NOT EXISTS `user_profiles` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '记录ID',
   `user_id` INT UNSIGNED NOT NULL COMMENT '用户ID',
