@@ -101,9 +101,36 @@ class AuthService:
     @staticmethod
     def authenticate_user_by_code(db: Session, phone: str, code: str) -> Optional[User]:
         """通过验证码验证用户"""
+        # 验证验证码是否正确
         if not AuthService.verify_code(db, phone, code, 2):
             return None
-        return AuthService.get_user_by_phone(db, phone)
+        
+        # 获取用户
+        user = AuthService.get_user_by_phone(db, phone)
+        
+        # 如果用户不存在，则自动创建用户
+        if not user:
+            # 创建一个随机密码 (可选，如果系统要求用户必须有密码)
+            random_password = ''.join(random.choices('0123456789abcdefghijklmnopqrstuvwxyz', k=10))
+            
+            # 创建用户
+            user = User(
+                phone=phone,
+                password_hash=get_password_hash(random_password),
+                is_active=True,
+                register_time=datetime.utcnow(),
+                last_login_time=datetime.utcnow()
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+            
+            # 创建默认的用户资料
+            default_profile = UserProfile(user_id=user.id)
+            db.add(default_profile)
+            db.commit()
+        
+        return user
 
     @staticmethod
     def get_user_by_phone(db: Session, phone: str) -> Optional[User]:
