@@ -21,8 +21,8 @@ class Settings(BaseSettings):
     MYSQL_DATABASE: str = "health777"
     
     # 短信服务配置
-    SMS_ACCESS_KEY_ID: Optional[str] = "LTAI5tRhMTfjWSxHpAHqW9VF"
-    SMS_ACCESS_KEY_SECRET: Optional[str] = "cwdGKpJOxIpphLvT6KVgXa9lXzP1Ac"
+    SMS_ACCESS_KEY_ID: Optional[str] = ""
+    SMS_ACCESS_KEY_SECRET: Optional[str] = ""
     SMS_SIGN_NAME: Optional[str] = "阿里云短信测试"
     SMS_TEMPLATE_CODE: Optional[str] = "SMS_154950909"
     SMS_ENDPOINT: str = "dysmsapi.aliyuncs.com"
