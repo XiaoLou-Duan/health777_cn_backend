@@ -1,6 +1,6 @@
 # 从 pydantic_settings 导入 BaseSettings，而不是从 pydantic 导入
 from pydantic_settings import BaseSettings
-from pydantic import EmailStr, field_validator
+from pydantic import EmailStr, field_validator, ConfigDict
 from typing import Optional  # 添加 Optional 导入
 
 class Settings(BaseSettings):
@@ -21,17 +21,20 @@ class Settings(BaseSettings):
     MYSQL_DATABASE: str = "health777"
     
     # 短信服务配置
-    SMS_ACCESS_KEY_ID: Optional[str] = None
-    SMS_ACCESS_KEY_SECRET: Optional[str] = None
-    SMS_SIGN_NAME: Optional[str] = None
-    SMS_TEMPLATE_CODE: Optional[str] = None
+    SMS_ACCESS_KEY_ID: Optional[str] = "LTAI5tRhMTfjWSxHpAHqW9VF"
+    SMS_ACCESS_KEY_SECRET: Optional[str] = "cwdGKpJOxIpphLvT6KVgXa9lXzP1Ac"
+    SMS_SIGN_NAME: Optional[str] = "阿里云短信测试"
+    SMS_TEMPLATE_CODE: Optional[str] = "SMS_154950909"
+    SMS_ENDPOINT: str = "dysmsapi.aliyuncs.com"
+    SMS_REGION_ID: str = "cn-hangzhou"
     
     # 阿里云配置
     ALIYUN_ACCESS_KEY_ID: Optional[str] = None
     ALIYUN_ACCESS_KEY_SECRET: Optional[str] = None
     
-    class Config:
-        case_sensitive = True
-        env_file = ".env"
+    model_config = ConfigDict(
+        case_sensitive=True,
+        env_file=".env"
+    )
 
 settings = Settings()

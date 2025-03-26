@@ -79,7 +79,16 @@ class AuthService:
         db.add(verification)
         db.commit()
         
+        # 发送短信验证码
+        AuthService.send_sms(phone, code, type)
+        
         return code
+        
+    @staticmethod
+    def send_sms(phone: str, code: str, sms_type: int) -> bool:
+        """发送短信验证码"""
+        from app.core.sms_service import SMSService
+        return SMSService.send_sms(phone, code, sms_type)
 
     @staticmethod
     def authenticate_user(db: Session, phone: str, password: str) -> Optional[User]:
