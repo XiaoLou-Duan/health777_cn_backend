@@ -4,12 +4,15 @@ from fastapi.responses import JSONResponse
 import time
 from app.core.logger import app_logger, log_request
 from app.api import auth
+import uvicorn
+from app.core.config import settings
 
 # 创建FastAPI应用实例
 app = FastAPI(
     title="肌少症（肌护达）老年患者健康管理系统",
     description="为老年肌少症患者提供健康管理服务的API",
     version="0.1.0",
+    prefix=settings.API_PREFIX
 )
 
 # 配置CORS
@@ -70,7 +73,7 @@ app.include_router(auth_router, tags=["认证"])
 # app.include_router(medical_router, prefix="/api/medical", tags=["医患互动"])
 # app.include_router(reminders_router, prefix="/api/reminders", tags=["提醒系统"])
 
-@app.get("/api/hello")
+@app.get("/hello")
 async def root():
     """
     根路径，返回API基本信息
@@ -82,7 +85,7 @@ async def root():
         "status": "healthy"
     }
 
-@app.get("/api/health")
+@app.get("/health")
 async def health_check():
     """
     健康检查接口
@@ -92,3 +95,6 @@ async def health_check():
         "status": "ok",
         "timestamp": time.time()
     }
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

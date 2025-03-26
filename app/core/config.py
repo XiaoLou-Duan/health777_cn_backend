@@ -5,8 +5,8 @@ from typing import Optional  # 添加 Optional 导入
 
 class Settings(BaseSettings):
     # API配置
-    API_V1_STR: str = "/api"
     PROJECT_NAME: str = "肌护达健康管理系统"
+    API_PREFIX: str = "/api"
     
     # 安全配置
     SECRET_KEY: str = "your-super-secret-key-here"  # 在生产环境中应该从环境变量获取

@@ -15,13 +15,13 @@ from app.models.auth import User
 # 定义路由器时不要包含前缀，让主应用决定前缀
 router = APIRouter()
 
-@router.post("/api/register", response_model=TokenResponse)
+@router.post("/register", response_model=TokenResponse)
 def register(request: RegisterRequest, db: Session = Depends(get_db)):
     """用户注册"""
     user = AuthService.create_user(db, request)
     return AuthService.create_access_token(user.id)
 
-@router.post("/api/login/phone", response_model=TokenResponse)
+@router.post("/login/phone", response_model=TokenResponse)
 def login_by_phone(request: PhoneLoginRequest, db: Session = Depends(get_db)):
     """手机验证码登录"""
     user = AuthService.authenticate_user_by_code(db, request.phone, request.code)
@@ -37,7 +37,7 @@ def login_by_phone(request: PhoneLoginRequest, db: Session = Depends(get_db)):
     
     return AuthService.create_access_token(user.id)
 
-@router.post("/api/login/password", response_model=TokenResponse)
+@router.post("/login/password", response_model=TokenResponse)
 def login_by_password(request: PasswordLoginRequest, db: Session = Depends(get_db)):
     """密码登录"""
     user = AuthService.authenticate_user(db, request.phone, request.password)
@@ -53,14 +53,15 @@ def login_by_password(request: PasswordLoginRequest, db: Session = Depends(get_d
     
     return AuthService.create_access_token(user.id)
 
-@router.post("/api/sms/send")
+@router.post("/sms/send")
 def send_sms_code(request: SendSmsRequest, db: Session = Depends(get_db)):
     """发送短信验证码"""
     code = AuthService.create_verification_code(db, request.phone, request.type)
-    # TODO: 实际发送短信的逻辑
+    # TODO: 实际发送短信的逻辑, 这里仅返回验证码
     return {"message": "验证码已发送"}
 
-@router.post("/api/password/change")
+
+@router.post("/password/change")
 def change_password(
     request: ChangePasswordRequest,
     current_user: User = Depends(get_current_user),
@@ -74,7 +75,7 @@ def change_password(
         )
     return {"message": "密码修改成功"}
 
-@router.post("/api/password/reset")
+@router.post("/password/reset")
 def reset_password(request: ResetPasswordRequest, db: Session = Depends(get_db)):
     """重置密码"""
     if not AuthService.reset_password(db, request.phone, request.code, request.new_password):
@@ -84,7 +85,7 @@ def reset_password(request: ResetPasswordRequest, db: Session = Depends(get_db))
         )
     return {"message": "密码重置成功"}
 
-@router.post("/api/phone/change")
+@router.post("/phone/change")
 def change_phone(
     request: ChangePhoneRequest,
     current_user: User = Depends(get_current_user),
@@ -98,12 +99,12 @@ def change_phone(
         )
     return {"message": "手机号修改成功"}
 
-@router.get("/api/profile", response_model=UserProfileResponse)
+@router.get("/profile", response_model=UserProfileResponse)
 def get_profile(current_user: User = Depends(get_current_user)):
     """获取用户资料"""
     return current_user.profile
 
-@router.put("/api/profile", response_model=UserProfileResponse)
+@router.put("/profile", response_model=UserProfileResponse)
 def update_profile(
     profile: UserProfileCreate,
     current_user: User = Depends(get_current_user),
@@ -112,7 +113,7 @@ def update_profile(
     """更新用户资料"""
     return AuthService.update_user_profile(db, current_user, profile)
 
-@router.post("/api/device", response_model=UserDeviceResponse)
+@router.post("/device", response_model=UserDeviceResponse)
 def register_device(
     device: UserDeviceCreate,
     current_user: User = Depends(get_current_user),
