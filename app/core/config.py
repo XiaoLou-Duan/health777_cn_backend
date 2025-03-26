@@ -23,8 +23,8 @@ class Settings(BaseSettings):
     # 短信服务配置
     SMS_ACCESS_KEY_ID: Optional[str] = ""
     SMS_ACCESS_KEY_SECRET: Optional[str] = ""
-    SMS_SIGN_NAME: Optional[str] = "阿里云短信测试"
-    SMS_TEMPLATE_CODE: Optional[str] = "SMS_154950909"
+    SMS_SIGN_NAME: Optional[str] = ""
+    SMS_TEMPLATE_CODE: Optional[str] = ""
     SMS_ENDPOINT: str = "dysmsapi.aliyuncs.com"
     SMS_REGION_ID: str = "cn-hangzhou"
     
